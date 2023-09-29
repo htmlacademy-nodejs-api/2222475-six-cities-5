@@ -45,3 +45,6 @@ export const ROOM_TYPE = {
   room: 'Private Room',
   hotel: 'Hotel',
 };
+
+export const LAT_NUM_AFTER_DIGIT = 5;
+export const LNG_NUM_AFTER_DIGIT = 6;

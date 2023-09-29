@@ -4,7 +4,7 @@ export interface Location {
 }
 
 export interface Host {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   avatarUrl: string;
@@ -12,7 +12,7 @@ export interface Host {
 }
 
 export interface Offer {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   createdDate: Date;
