@@ -1,6 +1,6 @@
-import { Offer } from '../types/index.js';
+import { OfferType } from '../types/index.js';
 
-export function createOffer(offerData: string): Offer {
+export function createOffer(offerData: string): OfferType {
   const [
     title,
     description,
@@ -23,7 +23,7 @@ export function createOffer(offerData: string): Offer {
     hostIsPro
   ] = offerData.replace('\n', '').split('\t');
 
-  const host = {
+  const user = {
     name: hostName,
     email: hostEmail,
     avatarUrl: hostAvatarUrl,
@@ -31,8 +31,8 @@ export function createOffer(offerData: string): Offer {
   };
 
   const location = {
-    latitude: Number(locationString.split(';')[0]),
-    longitude: Number(locationString.split(';')[1]),
+    latitude: Number(locationString.split(':')[0]),
+    longitude: Number(locationString.split(':')[1]),
   };
 
   return {
@@ -50,7 +50,7 @@ export function createOffer(offerData: string): Offer {
     maxAdults: Number(maxAdults),
     price: Number.parseInt(price, 10),
     goods: goods.split(';'),
-    host: host,
+    user: user,
     location: location,
   };
 }

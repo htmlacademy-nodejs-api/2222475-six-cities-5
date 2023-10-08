@@ -1,17 +1,11 @@
+import { User } from './user.type.js';
+
 export interface Location {
   latitude: number;
   longitude: number;
 }
 
-export interface Host {
-  id?: number;
-  name: string;
-  email: string;
-  avatarUrl: string;
-  isPro: boolean;
-}
-
-export interface Offer {
+export interface OfferType {
   id?: number;
   title: string;
   description: string;
@@ -27,8 +21,8 @@ export interface Offer {
   maxAdults: number;
   price: number;
   goods: string[];
-  host: Host;
+  user: User;
   location: Location;
 }
 
-export type Offers = Offer[];
+export type Offers = OfferType[];

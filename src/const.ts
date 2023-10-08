@@ -1,4 +1,4 @@
-import { Cities } from './shared/types/city.js';
+import { Cities } from './shared/types/city.type.js';
 
 export const CITIES: Cities = [
   {

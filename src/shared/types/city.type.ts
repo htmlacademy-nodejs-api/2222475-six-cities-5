@@ -1,8 +1,8 @@
-export interface City {
+export interface CityType {
   id: number;
   title: string;
   lat: number;
   lng: number;
 }
 
-export type Cities = City[];
+export type Cities = CityType[];
