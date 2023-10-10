@@ -1,4 +1,4 @@
-import { City } from '../types/index.js';
+import { CityType } from '../types/index.js';
 import { LAT_NUM_AFTER_DIGIT, LNG_NUM_AFTER_DIGIT } from '../../const.js';
 
 export function generateRandomValue(min:number, max: number, numAfterDigit = 0) {
@@ -15,7 +15,7 @@ export function getRandomItem<T>(items: T[]):T {
   return items[generateRandomValue(0, items.length - 1)];
 }
 
-export function getRandomPosition(city: City):string {
+export function getRandomPosition(city: CityType):string {
   const randLat = generateRandomValue(city.lat - 0.03, city.lat + 0.03, LAT_NUM_AFTER_DIGIT);
   const randLng = generateRandomValue(city.lng - 0.03, city.lng + 0.03, LNG_NUM_AFTER_DIGIT);
 
