@@ -10,7 +10,7 @@ export interface OfferType {
   title: string;
   description: string;
   createdDate: Date;
-  city: number;
+  city: string;
   previewImage: string;
   images: string[];
   isPremium: boolean;

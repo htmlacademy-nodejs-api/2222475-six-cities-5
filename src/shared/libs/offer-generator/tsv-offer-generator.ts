@@ -29,7 +29,7 @@ export class TSVOfferGenerator implements OfferGenerator {
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const city = getRandomItem<CityType>(CITIES);
+    const city = getRandomItem<CityType>(Object.values(CITIES));
     const locationString = getRandomPosition(city);
     const previewImage = getRandomItem<string>(this.mockData.images);
     const images = [];
@@ -57,7 +57,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       title,
       description,
       createdDate,
-      city.id.toString(),
+      city.title,
       previewImage,
       images.join(';'),
       isPremium,

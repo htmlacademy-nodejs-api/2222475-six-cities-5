@@ -39,7 +39,7 @@ export function createOffer(offerData: string): OfferType {
     title,
     description,
     createdDate: new Date(createdDate),
-    city: Number(city),
+    city: city,
     previewImage,
     images: images.split(';'),
     isPremium: !!isPremium,

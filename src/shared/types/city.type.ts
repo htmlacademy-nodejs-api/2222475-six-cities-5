@@ -5,4 +5,6 @@ export interface CityType {
   lng: number;
 }
 
-export type Cities = CityType[];
+export type Cities = {
+  [key: string]: CityType
+};
