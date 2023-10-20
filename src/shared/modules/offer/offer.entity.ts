@@ -8,6 +8,16 @@ export interface OfferEntity extends defaultClasses.Base {}
 @modelOptions({
   schemaOptions: {
     collection: 'offers',
+    toJSON: {
+      getters: true,
+      virtuals: true,
+      transform(_doc, ret) {
+        console.log('444');
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
   },
   options: {
     allowMixed: Severity.ALLOW
@@ -15,6 +25,9 @@ export interface OfferEntity extends defaultClasses.Base {}
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps {
+  @prop({ trim: true })
+  public id!: string;
+
   @prop({ trim: true, required: true })
   public title!: string;
 
@@ -65,6 +78,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true
   })
   public userId!: Ref<UserEntity>;
+
+  @prop({default: 0})
+  public commentCount!: number;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);
