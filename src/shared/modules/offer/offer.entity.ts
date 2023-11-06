@@ -1,5 +1,5 @@
-import { defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
-import { Location } from '../../types/index.js';
+import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
+import { Location, OfferTypeEnum } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -7,27 +7,11 @@ export interface OfferEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
-    collection: 'offers',
-    toJSON: {
-      getters: true,
-      virtuals: true,
-      transform(_doc, ret) {
-        console.log('444');
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
-  },
-  options: {
-    allowMixed: Severity.ALLOW
+    collection: 'offers'
   }
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps {
-  @prop({ trim: true })
-  public id!: string;
-
   @prop({ trim: true, required: true })
   public title!: string;
 
@@ -58,8 +42,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({default: false})
   public isFavorite!: boolean;
 
-  @prop({required: true})
-  public type!: string;
+  @prop({
+    type: () => String,
+    enum: OfferTypeEnum
+  })
+  public type!: OfferTypeEnum;
 
   @prop({default: 0})
   public bedrooms!: number;

@@ -6,8 +6,8 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT, MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
+import { DEFAULT_OFFER_COUNT, MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -30,6 +30,11 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.offerModel
+      .exists({_id: documentId})) !== null;
+  }
+
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndDelete(offerId)
@@ -43,63 +48,18 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-  public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_COUNT;
-
-    const lookupOperation = {
-      $lookup: {
-        from: 'comments',
-        localField: '_id',
-        foreignField: 'offerId',
-        as: 'comments',
-      },
-    };
-
-    const addFieldsOperation = {
-      $addFields: {
-        rating: {
-          $divide: [
-            {
-              $reduce: {
-                input: '$comments',
-                initialValue: 0,
-                in: { $add: ['$$value', '$$this.rating'] },
-              },
-            },
-            {
-              $cond: {
-                if: {$ne: [{$size: '$comments'}, 0]},
-                then: {$size: '$comments'},
-                else: 1
-              },
-            },
-          ],
-        },
-        commentsCount: { $size: '$comments' },
-      },
-    };
-
-    const removeCommentsOperation = { $unset: 'comments'};
-
-    const limitOperation = { $limit: limit };
-
-    const sortOperation = { $sort: { createdAt: SortType.Down } };
-
+  public async find(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .aggregate([
-        lookupOperation,
-        addFieldsOperation,
-        removeCommentsOperation,
-        limitOperation,
-        sortOperation
-      ])
+      .find()
+      .limit(DEFAULT_OFFER_COUNT)
+      .populate(['userId'])
       .exec();
   }
 
   public async findPremium(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find()
-      .sort({ createdAt: SortType.Down })
+      .sort({ createdDate: SortType.Down })
       .limit(MAX_PREMIUM_OFFER_COUNT)
       .exec();
   }
