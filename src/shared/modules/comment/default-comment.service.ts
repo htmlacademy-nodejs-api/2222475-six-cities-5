@@ -5,6 +5,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
+import { MAX_COMMENTS_OFFER_COUNT } from './comment.constant.js';
 
 @injectable()
 export class DefaultCommentService implements CommentService {
@@ -21,6 +22,7 @@ export class DefaultCommentService implements CommentService {
     return this.commentModel
       .find({offerId})
       .sort({ createdAt: SortType.Down })
+      .limit(MAX_COMMENTS_OFFER_COUNT)
       .populate('userId');
   }
 

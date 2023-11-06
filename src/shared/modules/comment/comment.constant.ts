@@ -1,0 +1,1 @@
+export const MAX_COMMENTS_OFFER_COUNT = 50;
