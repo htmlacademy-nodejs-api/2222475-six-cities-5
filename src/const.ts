@@ -46,5 +46,7 @@ export const ROOM_TYPE = {
   hotel: 'Hotel',
 };
 
+export const GOODS_LIST = ['Breakfast', 'Air conditioning', 'Laptop friendly workspace', 'Baby seat', 'Washer', 'Towels', 'Fridge'];
+
 export const LAT_NUM_AFTER_DIGIT = 5;
 export const LNG_NUM_AFTER_DIGIT = 6;

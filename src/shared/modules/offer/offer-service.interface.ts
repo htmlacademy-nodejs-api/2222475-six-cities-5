@@ -2,8 +2,9 @@ import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { DocumentType } from '@typegoose/typegoose';
 import { OfferEntity } from './offer.entity.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { DocumentExists } from '../../types/index.js';
 
-export interface OfferService {
+export interface OfferService extends DocumentExists {
   create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   find(): Promise<DocumentType<OfferEntity>[]>;
@@ -11,5 +12,6 @@ export interface OfferService {
   updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
   findPremium(): Promise<DocumentType<OfferEntity>[]>;
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  exists(documentId: string): Promise<boolean>;
 }
 
