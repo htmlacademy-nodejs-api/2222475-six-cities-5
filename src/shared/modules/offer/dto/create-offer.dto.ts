@@ -8,7 +8,7 @@ import {
   ArrayMinSize,
   ArrayMaxSize,
   IsBoolean,
-  IsEnum, IsInt, Min, Max, IsObject, IsMongoId, ValidateNested, IsIn
+  IsEnum, IsInt, Min, Max, IsObject, ValidateNested, IsIn
 } from 'class-validator';
 import { CITIES, GOODS_LIST } from '../../../../const.js';
 import { Type } from 'class-transformer';
@@ -70,6 +70,5 @@ export class CreateOfferDto {
   @Type(() => LocationDto)
   public location: LocationDto;
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   public userId: string;
 }
