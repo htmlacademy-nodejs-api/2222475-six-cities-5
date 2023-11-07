@@ -250,7 +250,7 @@ paths:
     get:
       tags:
         - offers
-      summary: Список избранный предложений
+      summary: Список избранных предложений
       description: Возвращает список избранных предложений авторизованного пользователя.
 
       responses:
@@ -270,26 +270,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorAuth'
 
-  /favorite/{offerId}/{action}:
+  /favorite/add:
     post:
       tags:
         - offers
-      summary: Добавление/удаление предложения в/из избранного
-      description: Добавление и удаление предложения в/из избранного. Возвращает новый объект предложения.
+      summary: Добавление предложения в избранное
+      description: Добавление предложения в избранное. Возвращает новый объект предложения.
 
-      parameters:
-        - in: path
-          name: offerId
-          description: ID предложения
-          schema:
-            type: string
-          required: true
-        - in: path
-          name: action
-          description: Принимает значение `add` (добавить в избранное) или `remove` (удалить из избранного)
-          schema:
-            type: string
-          required: true
+      requestBody:
+        description: Информация для добавления в избранное.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/changeFavorite'
+        required: true
+
+      responses:
+        '200':
+          description: Обновленное предложение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        '401':
+          description: Пользователь не авторизован. Ошибка доступа.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorAuth'
+
+        '404':
+          description: Предложение с offerId не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorNotFound'
+
+  /favorite/remove:
+    post:
+      tags:
+        - offers
+      summary: Удаление предложения из избранного
+      description: Удаление предложения из избранного. Возвращает новый объект предложения.
+
+      requestBody:
+        description: Информация для добавления в избранное.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/changeFavorite'
+        required: true
 
       responses:
         '200':
@@ -316,7 +347,6 @@ paths:
   /comments/{offerId}:
     get:
       tags:
-        - offers
         - comments
       summary: Список комментариев предложения
       description: Возвращает список комментариев предложения с offerId.
@@ -345,21 +375,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorNotFound'
-
+  /comments:
     post:
       tags:
-        - offers
         - comments
       summary: Добавление нового комментария
       description: Добавление нового комментария. Возврат объекта комментария
-
-      parameters:
-        - in: path
-          name: offerId
-          description: ID предложения
-          schema:
-            type: string
-          required: true
 
       requestBody:
         description: Информация для создания нового комментария.
@@ -650,6 +671,10 @@ components:
     commentCreation:
       type: object
       properties:
+        offerId:
+          type: string
+          example: 6329c3d6a04ab1061c6425e1
+
         text:
           type: string
           example: Very cool
@@ -657,3 +682,10 @@ components:
         rating:
           type: number
           example: 5
+
+    changeFavorite:
+      type: object
+      properties:
+        offerId:
+          type: string
+          example: 6329c3d6a04ab1061c6425e1
