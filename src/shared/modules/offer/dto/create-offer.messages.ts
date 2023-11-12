@@ -17,7 +17,6 @@ export const CreateOfferValidationMessage = {
   },
   previewImage: {
     maxLength: 'Too long for field «image»',
-    invalidFormat: 'Field image must be an array',
   },
   images: {
     invalidFormat: 'Field images must be an array',

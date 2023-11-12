@@ -1,4 +1,4 @@
-import { OfferType } from '../types/index.js';
+import { OfferType, OfferTypeEnum } from '../types/index.js';
 
 export function createOffer(offerData: string): OfferType {
   const [
@@ -9,7 +9,7 @@ export function createOffer(offerData: string): OfferType {
     previewImage,
     images,
     isPremium,
-    isFavorite,
+    commentCount,
     rating,
     type,
     bedrooms,
@@ -43,9 +43,9 @@ export function createOffer(offerData: string): OfferType {
     previewImage,
     images: images.split(';'),
     isPremium: !!isPremium,
-    isFavorite: !!isFavorite,
+    commentCount: Number(commentCount),
     rating: Number(rating),
-    type,
+    type: OfferTypeEnum[type as 'house' | 'apartment' | 'room' | 'hotel'],
     bedrooms: Number(bedrooms),
     maxAdults: Number(maxAdults),
     price: Number.parseInt(price, 10),

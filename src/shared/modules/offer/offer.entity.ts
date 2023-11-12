@@ -1,4 +1,4 @@
-import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
+import { defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
 import { Location, OfferTypeEnum } from '../../types/index.js';
 import { UserEntity } from '../user/index.js';
 
@@ -6,8 +6,11 @@ import { UserEntity } from '../user/index.js';
 export interface OfferEntity extends defaultClasses.Base {}
 
 @modelOptions({
+  options: {
+    allowMixed: Severity.ALLOW,
+  },
   schemaOptions: {
-    collection: 'offers'
+    collection: 'offers',
   }
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging

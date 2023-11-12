@@ -3,6 +3,7 @@ import { OfferGenerator } from './offer-generator.interface.js';
 import { CityType, MockServerData } from '../../types/index.js';
 import { generateRandomValue, getRandomItem, getRandomItems, getRandomPosition } from '../../helpers/index.js';
 import { CITIES } from '../../../const.js';
+import { DEFAULT_OFFER_COMMENT_COUNT } from '../../modules/offer/offer.constant.js';
 
 const MIN_PRICE = 100;
 const MAX_PRICE = 100000;
@@ -37,7 +38,6 @@ export class TSVOfferGenerator implements OfferGenerator {
       images.push(getRandomItem<string>(this.mockData.images));
     }
     const isPremium = generateRandomValue(BOOL_FALSE, BOOL_TRUE).toString();
-    const isFavorite = generateRandomValue(BOOL_FALSE, BOOL_TRUE).toString();
     const hostIsPro = generateRandomValue(BOOL_FALSE, BOOL_TRUE).toString();
     const rating = generateRandomValue(MIN_RATING, MAX_RATING, RATING_NUM_DIGIT).toString();
     const bedrooms = generateRandomValue(MIN_BEDROOMS, MAX_BEDROOMS).toString();
@@ -61,7 +61,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       previewImage,
       images.join(';'),
       isPremium,
-      isFavorite,
+      DEFAULT_OFFER_COMMENT_COUNT,
       rating,
       type,
       bedrooms,

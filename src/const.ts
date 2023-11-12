@@ -50,3 +50,9 @@ export const GOODS_LIST = ['Breakfast', 'Air conditioning', 'Laptop friendly wor
 
 export const LAT_NUM_AFTER_DIGIT = 5;
 export const LNG_NUM_AFTER_DIGIT = 6;
+
+export const ALLOWED_IMAGE_MIME_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+];
