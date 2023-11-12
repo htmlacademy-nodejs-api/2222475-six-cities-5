@@ -5,7 +5,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
-import { MAX_COMMENTS_OFFER_COUNT } from './comment.constant.js';
+import { MAX_COMMENTS_OFFER_COUNT, RATING_FRICTION_DIGITS } from './comment.constant.js';
 import { Types } from 'mongoose';
 import { OfferEntity } from '../offer/index.js';
 
@@ -53,7 +53,7 @@ export class DefaultCommentService implements CommentService {
 
     let rating = 0;
     if(result[0]) {
-      rating = Number(result[0].avarage_rating.toFixed(1));
+      rating = Number(result[0].avarage_rating.toFixed(RATING_FRICTION_DIGITS));
     }
 
     await this.offerModel

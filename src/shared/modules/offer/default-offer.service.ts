@@ -8,7 +8,12 @@ import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
-import { MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
+import {
+  ADD_COMMENT_COUNT,
+  FAVORITE_USER_EXIST,
+  FIRST_ARRAY_INDEX,
+  MAX_PREMIUM_OFFER_COUNT
+} from './offer.constant.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -26,7 +31,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async findById(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
-    const res = await this.offerModel
+    const items = await this.offerModel
       .aggregate([
         {$match: {'_id': new Types.ObjectId(`${offerId}`)}},
         {
@@ -65,19 +70,14 @@ export class DefaultOfferService implements OfferService {
           $addFields:
             {
               id: { $toString: '$_id'},
-              user: {$arrayElemAt: ['$user', 0]},
+              user: {$arrayElemAt: ['$user', FIRST_ARRAY_INDEX]},
               isFavorite: {$size: '$favorite'}
             }
         },
       ])
       .exec();
 
-
-    if (res && res.length) {
-      return res[0];
-    } else {
-      return null;
-    }
+    return (items && items.length) ? items[0] : null;
   }
 
   public async exists(documentId: string): Promise<boolean> {
@@ -211,7 +211,7 @@ export class DefaultOfferService implements OfferService {
               isFavorite: {$size: '$favorite'}
             }
         },
-        {$match: {'isFavorite': 1}},
+        {$match: {'isFavorite': FAVORITE_USER_EXIST}},
       ])
       .exec();
   }
@@ -220,7 +220,7 @@ export class DefaultOfferService implements OfferService {
     return this.offerModel
       .findByIdAndUpdate(offerId, {
         '$inc': {
-          commentCount: 1,
+          commentCount: ADD_COMMENT_COUNT,
         }
       }).exec();
   }
