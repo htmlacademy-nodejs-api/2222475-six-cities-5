@@ -1,4 +1,5 @@
 import { User } from './user.type.js';
+import { OfferTypeEnum } from './offer-type.enum.js';
 
 export interface Location {
   latitude: number;
@@ -14,9 +15,9 @@ export interface OfferType {
   previewImage: string;
   images: string[];
   isPremium: boolean;
-  isFavorite: boolean;
+  commentCount: number;
   rating: number;
-  type: string;
+  type: OfferTypeEnum;
   bedrooms: number;
   maxAdults: number;
   price: number;

@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { Types } from 'mongoose';
 import { OfferService } from './offer-service.interface.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -7,14 +8,15 @@ import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { SortType } from '../../types/sort-type.enum.js';
-import { DEFAULT_OFFER_COUNT, MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
+import { MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
-  ) {}
+  ) {
+  }
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
@@ -23,16 +25,69 @@ export class DefaultOfferService implements OfferService {
     return result;
   }
 
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findById(offerId)
-      .populate(['userId'])
+  public async findById(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
+    const res = await this.offerModel
+      .aggregate([
+        {$match: {'_id': new Types.ObjectId(`${offerId}`)}},
+        {
+          $lookup: {
+            from: 'users',
+            let: {userId: '$userId'},
+            pipeline: [
+              {$match: {$expr: {$eq: ['$$userId', '$_id']}}},
+            ],
+            as: 'user'
+          },
+        },
+        {
+          $lookup: {
+            from: 'favorites',
+            let: {
+              id: '$_id',
+              currentUserId: new Types.ObjectId(userId)
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {$eq: ['$$id', '$offerId']},
+                      {$eq: ['$$currentUserId', '$userId']},
+                    ]
+                  }
+                }
+              },
+            ],
+            as: 'favorite'
+          },
+        },
+        {
+          $addFields:
+            {
+              id: { $toString: '$_id'},
+              user: {$arrayElemAt: ['$user', 0]},
+              isFavorite: {$size: '$favorite'}
+            }
+        },
+      ])
       .exec();
+
+
+    if (res && res.length) {
+      return res[0];
+    } else {
+      return null;
+    }
   }
 
   public async exists(documentId: string): Promise<boolean> {
     return (await this.offerModel
       .exists({_id: documentId})) !== null;
+  }
+
+  public async isOfferOwner(offerId: string, userId: string): Promise<boolean> {
+    return (await this.offerModel
+      .exists({_id: offerId, userId})) !== null;
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -43,31 +98,130 @@ export class DefaultOfferService implements OfferService {
 
   public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndUpdate(offerId, dto, {new: true})
-      .populate(['userId'])
+      .findByIdAndUpdate(offerId, dto)
       .exec();
   }
 
-  public async find(): Promise<DocumentType<OfferEntity>[]> {
+  public async find(userId: string, limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find()
-      .limit(DEFAULT_OFFER_COUNT)
-      .populate(['userId'])
+      .aggregate([
+        {
+          $lookup: {
+            from: 'favorites',
+            let: {
+              id: '$_id',
+              currentUserId: new Types.ObjectId(userId)
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {$eq: ['$$id', '$offerId']},
+                      {$eq: ['$$currentUserId', '$userId']},
+                    ]
+                  }
+                }
+              },
+            ],
+            as: 'favorite'
+          },
+        },
+        {
+          $addFields:
+            {
+              id: { $toString: '$_id'},
+              isFavorite: {$size: '$favorite'}
+            }
+        },
+        {$sort: {createdDate: SortType.Down}}
+      ])
+      .limit(limit)
       .exec();
   }
 
-  public async findPremium(): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremium(city: string, userId: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find()
-      .sort({ createdDate: SortType.Down })
+      .aggregate([
+        {$match: {isPremium: true, city}},
+        {
+          $lookup: {
+            from: 'favorites',
+            let: {
+              id: '$_id',
+              currentUserId: new Types.ObjectId(userId)
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {$eq: ['$$id', '$offerId']},
+                      {$eq: ['$$currentUserId', '$userId']},
+                    ]
+                  }
+                }
+              },
+            ],
+            as: 'favorite'
+          },
+        },
+        {
+          $addFields:
+            {
+              id: { $toString: '$_id'},
+              isFavorite: {$size: '$favorite'}
+            }
+        },
+        {$sort: {createdDate: SortType.Down}}
+      ])
       .limit(MAX_PREMIUM_OFFER_COUNT)
+      .exec();
+  }
+
+  public async findFavorites(userId: string): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'favorites',
+            let: {
+              id: '$_id',
+              currentUserId: new Types.ObjectId(userId)
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {$eq: ['$$id', '$offerId']},
+                      {$eq: ['$$currentUserId', '$userId']},
+                    ]
+                  }
+                }
+              },
+            ],
+            as: 'favorite'
+          },
+        },
+        {
+          $addFields:
+            {
+              id: { $toString: '$_id'},
+              isFavorite: {$size: '$favorite'}
+            }
+        },
+        {$match: {'isFavorite': 1}},
+      ])
       .exec();
   }
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndUpdate(offerId, {'$inc': {
-        commentCount: 1,
-      }}).exec();
+      .findByIdAndUpdate(offerId, {
+        '$inc': {
+          commentCount: 1,
+        }
+      }).exec();
   }
 }

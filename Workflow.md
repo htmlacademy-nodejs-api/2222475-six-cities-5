@@ -100,3 +100,15 @@ npm run mock:server
 ### Остальное
 
 Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.
+
+## Параметры окружения
+
+**PORT=4000** - порт REST приложения<br>
+**SALT=supersecret** - соль для хранения паролей пользователей<br>
+**DB_HOST=127.0.0.1** - сервер базы данных MongoDB<br>
+**DB_USER=admin** - логин базы данных MongoDB<br>
+**DB_PASSWORD=test** - пароль базы данных MongoDB<br>
+**DB_PORT=27017** - порт базы данных MongoDB<br>
+**DB_NAME=six-cities_mongodb** - название базы данных MongoDB<br>
+**UPLOAD_DIRECTORY**=F:\HTMLAcademy\NodeJS\2222475-six-cities-5\upload\** - папка для загрузки динамических картинок<br>
+**JWT_SECRET=secret-super** - секрет для подписи JWT токенов

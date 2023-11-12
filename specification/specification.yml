@@ -246,7 +246,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorNotFound'
 
-  /favorite:
+  /offers/fetch-favorite:
     get:
       tags:
         - offers
@@ -261,7 +261,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/offer'
+                  $ref: '#/components/schemas/offerListItem'
 
         '401':
           description: Пользователь не авторизован. Ошибка доступа.
@@ -571,6 +571,53 @@ components:
             longitude:
               type: number
               example: 5.314119
+
+    offerListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        title:
+          type: string
+          example: Cool house
+
+        createdDate:
+          type: string
+          example: 2023-10-03T13:40:33.225Z
+
+        city:
+          type: string
+          example: Paris
+
+        previewImage:
+          type: string
+          example: avatar1.jpg
+
+        isPremium:
+          type: boolean
+          example: false
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.9
+
+        type:
+          type: string
+          example: house
+
+        price:
+          type: number
+          example: 500
+
+        commentsCount:
+          type: number
+          example: 1
 
     offerCreation:
       type: object

@@ -8,6 +8,8 @@ export class UploadFileMiddleware implements Middleware {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
+    private allowedMimeTypes: string[],
+    private maxFileAmount?: number,
   ) {}
 
   public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -17,12 +19,22 @@ export class UploadFileMiddleware implements Middleware {
         const fileExtention = extension(file.mimetype);
         const filename = nanoid();
         callback(null, `${filename}.${fileExtention}`);
+      },
+    });
+
+    const uploadFileMiddleware = multer({
+      storage, fileFilter: (_req, file, callback) => {
+        if (!this.allowedMimeTypes.includes(file.mimetype)) {
+          return callback(new Error(`${file.mimetype} is not allowed`));
+        }
+        callback(null, true);
       }
     });
 
-    const uploadSingleFileMiddleware = multer({ storage })
-      .single(this.fieldName);
+    if (this.maxFileAmount) {
+      return uploadFileMiddleware.array(this.fieldName, this.maxFileAmount)(req, res, next);
+    }
 
-    uploadSingleFileMiddleware(req, res, next);
+    uploadFileMiddleware.single(this.fieldName)(req, res, next);
   }
 }

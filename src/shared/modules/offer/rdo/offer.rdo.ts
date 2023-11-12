@@ -28,6 +28,10 @@ export class OfferRdo {
   public isPremium: boolean;
 
   @Expose()
+  @Type(() => Boolean)
+  public isFavorite: boolean;
+
+  @Expose()
   public type: string;
 
   @Expose()
@@ -42,7 +46,7 @@ export class OfferRdo {
   @Expose()
   public goods: string[];
 
-  @Expose({ name: 'userId'})
+  @Expose({ name: 'user'})
   @Type(() => UserRdo)
   public user: UserRdo;
 
@@ -51,4 +55,7 @@ export class OfferRdo {
 
   @Expose()
   public location: Location;
+
+  @Expose()
+  public rating: number;
 }

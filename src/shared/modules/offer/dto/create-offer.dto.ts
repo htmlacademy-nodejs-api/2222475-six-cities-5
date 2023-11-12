@@ -8,7 +8,7 @@ import {
   ArrayMinSize,
   ArrayMaxSize,
   IsBoolean,
-  IsEnum, IsInt, Min, Max, IsObject, ValidateNested, IsIn
+  IsEnum, IsInt, Min, Max, IsObject, ValidateNested, IsIn, IsOptional
 } from 'class-validator';
 import { CITIES, GOODS_LIST } from '../../../../const.js';
 import { Type } from 'class-transformer';
@@ -26,12 +26,14 @@ export class CreateOfferDto {
   @IsDateString({}, { message: CreateOfferValidationMessage.createdDate.invalidFormat })
   public createdDate: Date;
 
+  @IsOptional()
+  @MaxLength(256, { message: CreateOfferValidationMessage.previewImage.maxLength })
+  public previewImage?: string;
+
   @IsIn(Object.keys(CITIES), { each: true, message: CreateOfferValidationMessage.city.IsIn })
   public city: string;
 
-  @MaxLength(256, { message: CreateOfferValidationMessage.previewImage.maxLength })
-  public previewImage: string;
-
+  @IsOptional()
   @IsArray({ message: CreateOfferValidationMessage.images.invalidFormat })
   @ArrayMinSize(6, { message: CreateOfferValidationMessage.images.ArraySize })
   @ArrayMaxSize(6, { message: CreateOfferValidationMessage.images.ArraySize })
@@ -40,6 +42,9 @@ export class CreateOfferDto {
 
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.IsBoolean })
   public isPremium: boolean;
+
+  @IsOptional()
+  public rating?: number;
 
   @IsEnum(OfferTypeEnum, { message: CreateOfferValidationMessage.type.invalid })
   public type: OfferTypeEnum;
