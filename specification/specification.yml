@@ -41,6 +41,62 @@ paths:
 
         '409':
           description: Пользователь с таким email уже существует.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '400':
+          description: Ошибка валидации данных.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Добавление аватара
+      description: Добавляет аватар к пользователю.
+      security:
+        - bearerAuth: [ ]
+
+      requestBody:
+        description: Файл для обновления аватара.
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+        required: true
+
+      responses:
+        '200':
+          description: Аватар успешно обновлен.
+          content:
+            application/json:
+              schema:
+                properties:
+                  avatarUrl:
+                    type: string
+                    example: http://localhost:4000/upload/dHAVIN9Wc-XgSRGV4cyD1.png
+
+        '500':
+          description: Ошибка валидации полей.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Ошибка авторизации.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
 
   /users/login:
     post:
@@ -59,20 +115,33 @@ paths:
 
       responses:
         '201':
-          description: Пользователь зарегистрирован. Объект пользователя.
+          description: Пользователь зарегистрирован. Объект пользователя с токеном.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/userAuth'
 
-        '409':
-          description: Пользователь с таким email уже существует.
+        '400':
+          description: Ошибка валидации данных.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Неверный логин или пароль.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorAuth'
 
     get:
       tags:
         - users
       summary: Проверка состояния пользователя
       description: Возвращает информацию по авторизованному пользователю.
+      security:
+        - bearerAuth: []
 
       responses:
         '200':
@@ -87,18 +156,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorAuth'
-
-  /users/logout:
-    delete:
-      tags:
-        - users
-      summary: Завершение сеанса пользователя
-      description: Завершение сеанса пользователя - выход из закрытой части приложения
-
-      responses:
-        '204':
-          description: Сеанс завершен
+                $ref: '#/components/schemas/errorObject'
 
   /offers:
     get:
@@ -115,13 +173,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/offer'
+                  $ref: '#/components/schemas/offerListItem'
 
     post:
       tags:
         - offers
       summary: Создание нового предложения
       description: Создание нового предложения. Возвращает объект нового предложения.
+      security:
+        - bearerAuth: [ ]
 
       requestBody:
         description: Информация для создания нового предложения.
@@ -138,6 +198,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
+
+        '400':
+          description: Ошибка валидации полей.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Пользователь не авторизован. Ошибка доступа.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
 
   /offers/{offerId}:
     get:
@@ -167,13 +241,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
 
-    put:
+    patch:
       tags:
         - offers
       summary: Изменение информации о предложении
       description: Изменение информации о предложении. Возвращает новый объект предложения.
+      security:
+        - bearerAuth: [ ]
+
       parameters:
         - in: path
           name: offerId
@@ -186,7 +263,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/offerCreation'
+              $ref: '#/components/schemas/offerUpdating'
         required: true
 
       responses:
@@ -202,49 +279,134 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
+
+        '400':
+          description: Ошибка валидации полей.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Пользователь не авторизован. Ошибка доступа.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
 
     delete:
       tags:
         - offers
       summary: Удаление предложения
       description: Удаление предложения пользователя
+      security:
+        - bearerAuth: [ ]
 
       responses:
         '204':
           description: Предложение удалено
 
-  /offers/{offerId}/nearby:
-    get:
+        '401':
+          description: Пользователь не авторизован. Ошибка доступа.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+  /offers/{offerId}/previewImage:
+    post:
       tags:
         - offers
-      summary: Список предложений неподалеку
-      description: Возвращает список предложений неподалеку - в текущем городе.
+      summary: Добавление изображения предпросмотра
+      description: Добавляет изображения предпросмотра к предложению.
+      security:
+        - bearerAuth: [ ]
 
-      parameters:
-        - in: path
-          name: offerId
-          description: ID предложения
-          schema:
-            type: string
-          required: true
+      requestBody:
+        description: Файл для обновления изображения.
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                previewImage:
+                  type: string
+                  format: binary
+        required: true
 
       responses:
         '200':
-          description: Массив предложений
+          description: Изображения предпросмотра успешно обновлено.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
+                properties:
+                  previewImage:
+                    type: string
+                    example: http://localhost:4000/upload/dHAVIN9Wc-XgSRGV4cyD1.png
 
-        '404':
-          description: Предложение с offerId не найдено
+        '500':
+          description: Ошибка валидации полей.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Ошибка авторизации.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+  /offers/{offerId}/images:
+    post:
+      tags:
+        - offers
+      summary: Добавление основных изображений
+      description: Добавляет 6 основных изображений к предложению.
+      security:
+        - bearerAuth: [ ]
+
+      requestBody:
+        description: Файлы для обновления изображений.
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+        required: true
+
+      responses:
+        '200':
+          description: Основные изображения успешно обновлены.
+          content:
+            application/json:
+              schema:
+                properties:
+                  images:
+                    type: array
+                    items:
+                      type: string
+                      example: http://localhost:4000/upload/dHAVIN9Wc-XgSRGV4cyD1.png
+
+        '500':
+          description: Ошибка валидации полей.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
+
+        '401':
+          description: Ошибка авторизации.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
 
   /offers/fetch-favorite:
     get:
@@ -252,6 +414,8 @@ paths:
         - offers
       summary: Список избранных предложений
       description: Возвращает список избранных предложений авторизованного пользователя.
+      security:
+        - bearerAuth: [ ]
 
       responses:
         '200':
@@ -268,7 +432,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorAuth'
+                $ref: '#/components/schemas/errorObject'
+
+  /offers/fetch-premium?city={city}:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных предложений
+      description: Возвращает список премиальных предложений по городу.
+      parameters:
+        - in: path
+          name: city
+          description: Название города
+          schema:
+            type: string
+          required: true
+
+      responses:
+        '200':
+          description: Массив предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/offerListItem'
+
+        '404':
+          description: Город не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorObject'
 
   /favorite/add:
     post:
@@ -276,6 +471,8 @@ paths:
         - offers
       summary: Добавление предложения в избранное
       description: Добавление предложения в избранное. Возвращает новый объект предложения.
+      security:
+        - bearerAuth: [ ]
 
       requestBody:
         description: Информация для добавления в избранное.
@@ -305,7 +502,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
 
   /favorite/remove:
     post:
@@ -313,6 +510,8 @@ paths:
         - offers
       summary: Удаление предложения из избранного
       description: Удаление предложения из избранного. Возвращает новый объект предложения.
+      security:
+        - bearerAuth: [ ]
 
       requestBody:
         description: Информация для добавления в избранное.
@@ -342,9 +541,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
 
-  /comments/{offerId}:
+  /offers/{offerId}/comments:
     get:
       tags:
         - comments
@@ -374,13 +573,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
   /comments:
     post:
       tags:
         - comments
       summary: Добавление нового комментария
       description: Добавление нового комментария. Возврат объекта комментария
+      security:
+        - bearerAuth: [ ]
 
       requestBody:
         description: Информация для создания нового комментария.
@@ -403,10 +604,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorNotFound'
+                $ref: '#/components/schemas/errorObject'
 
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     createUser:
       type: object
@@ -427,13 +634,13 @@ components:
           type: string
           example: passw0rd!
 
+        isPro:
+          type: boolean
+          example: true
+
     user:
       type: object
       properties:
-        id:
-          type: string
-          example: 6321c3d6504ab1061c6425e5
-
         name:
           type: string
           example: Name
@@ -446,13 +653,28 @@ components:
           type: string
           example: avatar.jpg
 
-        password:
-          type: string
-          example: passw0rd!
-
         isPro:
           type: boolean
           example: true
+
+    userAuth:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Name
+
+        email:
+          type: string
+          example: name@email.com
+
+        avatarUrl:
+          type: string
+          example: avatar.jpg
+
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayIsImlkIjoiNjU0ZmNjNjNhMmRhNzUzYmUwNjMxZmZmIiwiaWF0IjoxNjk5ODE5OTM3LCJleHAiOjE2OTk5OTI3Mzd9.4lsiqgNx6DR6w3cyvn_iChePi_X2lNXBH5400jDpspY
 
     userLogin:
       type: object
@@ -468,13 +690,13 @@ components:
     errorAuth:
       type: object
       properties:
-        errorType:
+        type:
           type: string
-          example: 'COMMON_ERROR'
+          example: 'AUTHORIZATION'
 
-        message:
+        error:
           type: string
-          example: 'Access denied'
+          example: 'Incorrect user name or password'
 
     offer:
       type: object
@@ -496,19 +718,8 @@ components:
           example: 2023-10-03T13:40:33.225Z
 
         city:
-          type: object
-          properties:
-            name:
-              type: string
-              example: Paris
-
-            lat:
-              type: number
-              example: 49.87262
-
-            lng:
-              type: number
-              example: 5.314119
+          type: string
+          example: Paris
 
         previewImage:
           type: string
@@ -638,15 +849,57 @@ components:
           type: string
           example: Paris
 
-        previewImage:
-          type: string
-          example: offer.jpg
+        isPremium:
+          type: boolean
+          example: false
 
-        images:
+        type:
+          type: string
+          example: house
+
+        bedrooms:
+          type: number
+          example: 5
+
+        maxAdults:
+          type: number
+          example: 5
+
+        price:
+          type: number
+          example: 500
+
+        goods:
           type: array
           items:
             type: string
-          example: [ offer1.jpg, offer2.jpg, offer3.jpg, offer4.jpg, offer5.jpg, offer6.jpg ]
+          example: [ Laptop, Washer, Fridge ]
+
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 49.87262
+
+            longitude:
+              type: number
+              example: 5.314119
+
+    offerUpdating:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Cool house
+
+        description:
+          type: string
+          example: Very cool and spacious house
+
+        city:
+          type: string
+          example: Paris
 
         isPremium:
           type: boolean
@@ -685,23 +938,35 @@ components:
               type: number
               example: 5.314119
 
-    errorNotFound:
+    errorObject:
       type: object
       properties:
         errorType:
           type: string
           example: 'COMMON_ERROR'
 
-        message:
+        error:
           type: string
           example: 'Not found'
+
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+                example: 'isPro'
+              messages:
+                type: array
+                items:
+                  type: string
+                  example: 'Field isPro must be a boolean'
+          example: [{"property":"isPro","messages":["Field isPro must be a boolean"]}]
 
     comment:
       type: object
       properties:
-        id:
-          type: string
-          example: 6329c3d6a04ab1061c6425e1
         text:
           type: string
           example: Very cool
@@ -711,9 +976,8 @@ components:
         rating:
           type: number
           example: 5
-        authorId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
+        user:
+          $ref: '#/components/schemas/user'
 
     commentCreation:
       type: object

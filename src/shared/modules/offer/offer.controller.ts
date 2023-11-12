@@ -148,9 +148,8 @@ export default class OfferController extends BaseController {
   }
 
   public async findPremium({tokenPayload, query}: Request, res: Response) {
-    const city = query.city;
+    const city = String(query.city);
     const userId = tokenPayload ? tokenPayload.id : undefined;
-    // @ts-ignore
     const offers = await this.offerService.findPremium(city, userId);
     this.ok(res, fillDTO(OfferListRdo, offers));
   }

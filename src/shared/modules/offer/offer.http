@@ -1,5 +1,5 @@
 # Получить объявление по идентификатору
-GET http://localhost:4000/offers/654e5bd8942ec88e78256ce2 HTTP/1.1
+GET http://localhost:4000/offers/65513b0193d9c96d7863ae2b HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuczJAb3Zlcmxvb2submV0IiwibmFtZSI6IkphY2syIiwiaWQiOiI2NTRmZDgyNGJmZWQ3NjU5OTBhYjBiZWMiLCJpYXQiOjE2OTk3MzE1MDAsImV4cCI6MTY5OTkwNDMwMH0.7zK2PvsH_JIiCvk5IcMJHp3Eys6GO3J3wDgACu5Etyg
 
 ###
@@ -49,8 +49,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 ## Удалить объявление по идентификатору
 
-DELETE http://localhost:4000/offers/654a2e96e99efcefbd871de4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayIsImlkIjoiNjU0MDA4YWJlNDUyYjgyNWY5ZjY4YTEyIiwiaWF0IjoxNjk5MzYwMTkyLCJleHAiOjE2OTk1MzI5OTJ9.-YLEjns8JFBMZfgxfq4RHnwYrzexPFqm_W7kaAaoR9g
+DELETE http://localhost:4000/offers/65513b0193d9c96d7863ae2b HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJuYW1lIjoiSmFjayIsImlkIjoiNjU0ZmNjNjNhMmRhNzUzYmUwNjMxZmZmIiwiaWF0IjoxNjk5ODA2NTU2LCJleHAiOjE2OTk5NzkzNTZ9.XtKoP6gpl_FJcKf7_r9oWB1pOVm6Vu2aHDoF82DNrwU
 
 ###
 
