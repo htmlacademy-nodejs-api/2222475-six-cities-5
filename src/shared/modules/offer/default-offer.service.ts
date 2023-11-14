@@ -81,13 +81,13 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async exists(documentId: string): Promise<boolean> {
-    return (await this.offerModel
-      .exists({_id: documentId})) !== null;
+    return !!(await this.offerModel
+      .exists({_id: documentId}));
   }
 
   public async isOfferOwner(offerId: string, userId: string): Promise<boolean> {
-    return (await this.offerModel
-      .exists({_id: offerId, userId})) !== null;
+    return !!(await this.offerModel
+      .exists({_id: offerId, userId}));
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {

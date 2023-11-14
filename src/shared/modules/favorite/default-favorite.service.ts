@@ -28,7 +28,7 @@ export class DefaultFavoriteService implements FavoriteService {
   }
 
   public async exists(offerId: string, userId: string): Promise<boolean> {
-    return (await this.favoriteModel
-      .exists({offerId: offerId, userId: userId})) !== null;
+    return !!(await this.favoriteModel
+      .exists({offerId: offerId, userId: userId}));
   }
 }

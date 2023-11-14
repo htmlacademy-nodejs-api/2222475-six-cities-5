@@ -1,16 +1,18 @@
-export const CreateUserMessages = {
-  email: {
-    invalidFormat: 'email must be a valid address'
+import { USER_VALIDATION_OPTIONS } from '../user.constant.js';
+
+export const CREATE_USER_MESSAGES = {
+  EMAIL: {
+    INVALID_FORMAT: 'Email must be a valid address'
   },
-  name: {
-    invalidFormat: 'firstname is required',
-    lengthField: 'min length is 1, max is 15',
+  NAME: {
+    INVALID_FORMAT: 'Firstname is required',
+    LENGTH_FIELD: `Min length is ${USER_VALIDATION_OPTIONS.NAME.MIN_LENGTH}, max is ${USER_VALIDATION_OPTIONS.NAME.MAX_LENGTH}`,
   },
-  password: {
-    invalidFormat: 'password is required',
-    lengthField: 'min length for password is 6, max is 12'
+  PASSWORD: {
+    INVALID_FORMAT: 'Password is required',
+    LENGTH_FIELD: `Min length for password is ${USER_VALIDATION_OPTIONS.PASSWORD.MIN_LENGTH}, max is ${USER_VALIDATION_OPTIONS.PASSWORD.MAX_LENGTH}`
   },
-  isPro: {
-    IsBoolean: 'Field isPro must be a boolean',
+  IS_PRO: {
+    IS_BOOLEAN: 'Field isPro must be a boolean',
   },
 } as const;

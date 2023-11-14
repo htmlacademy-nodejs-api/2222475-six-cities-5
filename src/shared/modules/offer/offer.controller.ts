@@ -16,7 +16,7 @@ import { fillDTO } from '../../helpers/index.js';
 import { OfferRdo } from './rdo/offer.rdo.js';
 import { CreateOfferRequest } from './type/create-offer-request.type.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { CommentRdo, CommentService } from '../comment/index.js';
+import { CommentService } from '../comment/index.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
 import { UploadPreviewImageRdo } from './rdo/upload-preview-image.rdo.js';
 import { ALLOWED_IMAGE_MIME_TYPES } from '../../../const.js';
@@ -96,15 +96,6 @@ export default class OfferController extends BaseController {
       ]
     });
     this.addRoute({
-      path: '/:offerId/comments',
-      method: HttpMethod.Get,
-      handler: this.getComments,
-      middlewares: [
-        new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
-      ]
-    });
-    this.addRoute({
       path: '/:offerId/previewImage',
       method: HttpMethod.Post,
       handler: this.uploadPreviewImage,
@@ -172,11 +163,6 @@ export default class OfferController extends BaseController {
     await this.offerService.updateById(params.offerId, body);
     const updatedOffer = await this.offerService.findById(params.offerId, tokenPayload.id);
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
-  }
-
-  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
-    const comments = await this.commentService.findByOfferId(params.offerId);
-    this.ok(res, fillDTO(CommentRdo, comments));
   }
 
   public async uploadPreviewImage({ params, file } : Request<ParamOfferId>, res: Response) {

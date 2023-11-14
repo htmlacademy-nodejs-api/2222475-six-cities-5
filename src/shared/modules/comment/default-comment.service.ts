@@ -39,7 +39,7 @@ export class DefaultCommentService implements CommentService {
   }
 
   private async calculateRatingByOfferId(offerId: string): Promise<void> {
-    const result = await this.commentModel
+    const [result] = await this.commentModel
       .aggregate([
         {$match: {offerId: new Types.ObjectId(offerId)}},
         {
@@ -51,10 +51,7 @@ export class DefaultCommentService implements CommentService {
       ])
       .exec();
 
-    let rating = 0;
-    if(result[0]) {
-      rating = Number(result[0].avarage_rating.toFixed(RATING_FRICTION_DIGITS));
-    }
+    const rating = result?.avarage_rating ? Number(result.avarage_rating.toFixed(RATING_FRICTION_DIGITS)) : 0;
 
     await this.offerModel
       .findByIdAndUpdate(offerId, {

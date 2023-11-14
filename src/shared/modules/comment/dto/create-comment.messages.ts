@@ -1,14 +1,16 @@
-export const CreateCommentMessages = {
-  text: {
-    invalidFormat: 'Text is required',
-    lengthField: 'Min text length is 5, max is 2024'
+import { CommentValidate } from '../comment.constant.js';
+
+export const CREATE_COMMENT_MESSAGES = {
+  TEXT: {
+    INVALID_FORMAT: 'Text is required',
+    LENGTH_FIELD: `Min text length is ${CommentValidate.MinTextLength}, max is ${CommentValidate.MaxTextLength}`
   },
-  offerId: {
-    invalidFormat: 'OfferId field must be a valid id'
+  OFFER_ID: {
+    INVALID_FORMAT: 'OfferId field must be a valid id'
   },
-  rating: {
-    invalidFormat: 'Rating field must be a integer',
-    minValue: 'Min rating must be no less then 1',
-    maxValue: 'Max rating must be no more then 5',
+  RATING: {
+    INVALID_FORMAT: 'Rating field must be a integer',
+    MIN_VALUE: 'Min rating must be no less then 1',
+    MAX_VALUE: 'Max rating must be no more then 5',
   },
-} as const;
+};

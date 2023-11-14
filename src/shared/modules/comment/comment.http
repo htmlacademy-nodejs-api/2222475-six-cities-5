@@ -12,3 +12,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuczJAb3Zlcmxvb2sub
 }
 
 ###
+
+## Список комментариев к объявлению
+GET http://localhost:4000/comments/654e5bd8942ec88e78256ce2 HTTP/1.1
+
+###

@@ -1,55 +1,63 @@
-import { CITIES, GOODS_LIST } from '../../../../const.js';
+import {
+  CITIES,
+  GOODS_LIST,
+  OfferGeneratorAdults,
+  OfferGeneratorBedrooms,
+  OfferGeneratorPrice
+} from '../../../../const.js';
+import { OFFER_VALIDATION_OPTIONS } from '../offer.constant.js';
+import { OfferTypeEnum } from '../../../types/index.js';
 
-export const CreateOfferValidationMessage = {
-  title: {
-    minLength: 'Minimum title length must be 10',
-    maxLength: 'Maximum title length must be 100',
+export const CREATE_OFFER_VALIDATION_MESSAGE = {
+  TITLE: {
+    MIN_LENGTH: `Minimum title length must be ${OFFER_VALIDATION_OPTIONS.TITLE.MIN_LENGTH}`,
+    MAX_LENGTH: `Maximum title length must be ${OFFER_VALIDATION_OPTIONS.TITLE.MAX_LENGTH}`,
   },
-  description: {
-    minLength: 'Minimum description length must be 20',
-    maxLength: 'Maximum description length must be 1024',
+  DESCRIPTION: {
+    MIN_LENGTH: `Minimum description length must be ${OFFER_VALIDATION_OPTIONS.DESCRIPTION.MIN_LENGTH}`,
+    MAX_LENGTH: `Maximum description length must be ${OFFER_VALIDATION_OPTIONS.DESCRIPTION.MAX_LENGTH}`,
   },
-  createdDate: {
-    invalidFormat: 'postDate must be a valid ISO date',
+  CREATED_DATE: {
+    INVALID_FORMAT: 'postDate must be a valid ISO date',
   },
-  city: {
-    IsIn: `Field city must be the one of value from the list: ${ Object.keys(CITIES).join(', ')}`,
+  CITY: {
+    IS_IN: `Field city must be the one of value from the list: ${ Object.keys(CITIES).join(', ')}`,
   },
-  previewImage: {
-    maxLength: 'Too long for field «image»',
+  PREVIEW_IMAGE: {
+    MAX_LENGTH: 'Too long for field «image»',
   },
-  images: {
-    invalidFormat: 'Field images must be an array',
-    ArraySize: 'Field images must contain 6 pictures',
+  IMAGES: {
+    INVALID_FORMAT: 'Field images must be an array',
+    ARRAY_SIZE: `Field images must contain ${OFFER_VALIDATION_OPTIONS.IMAGES.ARRAY_SIZE} pictures`,
   },
-  goods: {
-    invalidFormat: 'Field goods must be an array',
-    ArrayMinSize: 'Field goods must contain at least 1 good',
-    ArrayMaxSize: 'Field goods must contain no more 7 goods',
-    IsIn: `Field goods must be one or more options from the list: ${ GOODS_LIST.join(', ')}`,
+  GOODS: {
+    INVALID_FORMAT: 'Field goods must be an array',
+    ARRAY_MIN_SIZE: `Field goods must contain at least ${OFFER_VALIDATION_OPTIONS.GOODS.MIN_SIZE} good`,
+    ARRAY_MAX_SIZE: `Field goods must contain no more ${OFFER_VALIDATION_OPTIONS.GOODS.MAX_SIZE} goods`,
+    IS_IN: `Field goods must be one or more options from the list: ${ GOODS_LIST.join(', ')}`,
   },
-  isPremium: {
-    IsBoolean: 'Field isPremium must be a boolean',
+  IS_PREMIUM: {
+    IS_BOOLEAN: 'Field isPremium must be a boolean',
   },
-  type: {
-    invalid: 'type must be apartment, house, room or hotel',
+  TYPE: {
+    INVALID: `Type must be one of this: ${Object.values(OfferTypeEnum).join(', ')}`,
   },
-  price: {
-    invalidFormat: 'Price must be an integer',
-    minValue: 'Minimum price is 100',
-    maxValue: 'Maximum price is 100000',
+  PRICE: {
+    INVALID_FORMAT: 'Price must be an integer',
+    MIN_VALUE: `Minimum price is ${OfferGeneratorPrice.MinPrice}`,
+    MAX_VALUE: `Maximum price is ${OfferGeneratorPrice.MaxPrice}`,
   },
-  bedrooms: {
-    invalidFormat: 'Bedrooms must be an integer',
-    minValue: 'Minimum bedrooms is 1',
-    maxValue: 'Maximum bedrooms is 8',
+  BEDROOMS: {
+    INVALID_FORMAT: 'Bedrooms must be an integer',
+    MIN_VALUE: `Minimum bedrooms is ${OfferGeneratorBedrooms.MinBedrooms}`,
+    MAX_VALUE: `Maximum bedrooms is ${OfferGeneratorBedrooms.MaxBedrooms}`,
   },
-  maxAdults: {
-    invalidFormat: 'Max adults must be an integer',
-    minValue: 'Minimum max adults is 1',
-    maxValue: 'Maximum max adults is 10',
+  MAX_ADULTS: {
+    INVALID_FORMAT: 'Max adults must be an integer',
+    MIN_VALUE: `Minimum max adults is ${OfferGeneratorAdults.MinAdults}`,
+    MAX_VALUE: `Maximum max adults is ${OfferGeneratorAdults.MaxAdults}`,
   },
-  userId: {
-    invalidId: 'userId field must be a valid id',
+  USER_ID: {
+    INVALID_ID: 'userId field must be a valid id',
   },
-} as const;
+};
