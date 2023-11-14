@@ -1,5 +1,11 @@
 import { Cities } from './shared/types/city.type.js';
 
+export const BOOL_TRUE = 1;
+export const BOOL_FALSE = 0;
+
+export const FIRST_WEEK_DAY = 1;
+export const LAST_WEEK_DAY = 7;
+
 export const CITIES: Cities = {
   Paris: {
     id: 1,
@@ -38,14 +44,6 @@ export const CITIES: Cities = {
     lng: 6.776314,
   },
 };
-
-export const ROOM_TYPE = {
-  house: 'House',
-  apartment: 'Apartment',
-  room: 'Private Room',
-  hotel: 'Hotel',
-};
-
 export const GOODS_LIST = ['Breakfast', 'Air conditioning', 'Laptop friendly workspace', 'Baby seat', 'Washer', 'Towels', 'Fridge'];
 
 export const LAT_NUM_AFTER_DIGIT = 5;
@@ -56,3 +54,22 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
   'image/jpeg',
   'image/jpg',
 ];
+
+export const RATING_NUM_DIGIT = 1;
+
+export enum OfferGeneratorPrice {
+  MinPrice = 100,
+  MaxPrice = 100000,
+}
+export enum OfferGeneratorBedrooms {
+  MinBedrooms = 1,
+  MaxBedrooms = 8,
+}
+export enum OfferGeneratorAdults {
+  MinAdults = 1,
+  MaxAdults = 10,
+}
+export enum OfferGeneratorRating {
+  MinRating = 1,
+  MaxRating = 5,
+}

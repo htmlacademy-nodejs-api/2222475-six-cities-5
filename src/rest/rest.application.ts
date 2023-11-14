@@ -11,7 +11,7 @@ import { STATIC_FILES_ROUTE, STATIC_UPLOAD_ROUTE } from './rest.constant.js';
 
 @injectable()
 export class RestApplication {
-  private server: Express;
+  private server: Express = express();
 
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
@@ -25,11 +25,9 @@ export class RestApplication {
     @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
     @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: ExceptionFilter,
     @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: ExceptionFilter,
-  ) {
-    this.server = express();
-  }
+  ) { }
 
-  private async _initDb() {
+  private async initDb() {
     const mongoUri = getMongoURI(
       this.config.get('DB_USER'),
       this.config.get('DB_PASSWORD'),
@@ -41,19 +39,19 @@ export class RestApplication {
     return this.databaseClient.connect(mongoUri);
   }
 
-  private async _initServer() {
+  private async initServer() {
     const port = this.config.get('PORT');
     this.server.listen(port);
   }
 
-  private async _initControllers() {
+  private async initControllers() {
     this.server.use('/users', this.userController.router);
     this.server.use('/offers', this.offerController.router);
     this.server.use('/comments', this.commentController.router);
     this.server.use('/favorites', this.favoriteController.router);
   }
 
-  private async _initMiddleware() {
+  private async initMiddleware() {
     const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
 
     this.server.use(express.json());
@@ -69,7 +67,7 @@ export class RestApplication {
     this.server.use(cors());
   }
 
-  private async _initExceptionFilters() {
+  private async initExceptionFilters() {
     this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.validationExceptionFilter.catch.bind(this.validationExceptionFilter));
     this.server.use(this.httpExceptionFilter.catch.bind(this.httpExceptionFilter));
@@ -80,23 +78,23 @@ export class RestApplication {
     this.logger.info('Application initialization');
 
     this.logger.info('Init database...');
-    await this._initDb();
+    await this.initDb();
     this.logger.info('Init database completed');
 
     this.logger.info('Init app-level middleware...');
-    await this._initMiddleware();
+    await this.initMiddleware();
     this.logger.info('App-level middleware initialization completed');
 
     this.logger.info('Init controllers...');
-    await this._initControllers();
+    await this.initControllers();
     this.logger.info('Controller initialization completed');
 
     this.logger.info('Init exception filters...');
-    await this._initExceptionFilters();
+    await this.initExceptionFilters();
     this.logger.info('Exception filters initialization completed');
 
     this.logger.info('Try to init server...');
-    await this._initServer();
+    await this.initServer();
     this.logger.info(`Server started on ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`);
   }
 }

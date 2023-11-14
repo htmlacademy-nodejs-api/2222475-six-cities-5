@@ -45,7 +45,7 @@ export function createOffer(offerData: string): OfferType {
     isPremium: !!isPremium,
     commentCount: Number(commentCount),
     rating: Number(rating),
-    type: OfferTypeEnum[type as 'house' | 'apartment' | 'room' | 'hotel'],
+    type: OfferTypeEnum[type as 'House' | 'Apartment' | 'Room' | 'Hotel'],
     bedrooms: Number(bedrooms),
     maxAdults: Number(maxAdults),
     price: Number.parseInt(price, 10),

@@ -33,6 +33,18 @@ export class GenerateCommand implements Command {
     const [count, filepath, url] = parameters;
     const offerCount = Number.parseInt(count, 10);
 
+    if(!offerCount) {
+      throw new Error('The number of offers is not specified');
+    }
+
+    if(!filepath) {
+      throw new Error('The path for generated offers is not specified');
+    }
+
+    if(!url) {
+      throw new Error('Mock data url not specified');
+    }
+
     try {
       await this.load(url);
       await this.write(filepath, offerCount);
